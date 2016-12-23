@@ -1,0 +1,66 @@
+qqplot_pvals <- function(vector, nodraw=F,tail=NULL, 
+                         asp=1, 
+                         xlab=expression("Expected -log"[10]*"(p)"),
+                         ylab=expression("Observed -log"[10]*"(p)"),
+                         resolution=0.05, 
+                         ..., abline.options=list(), cilines.options=list()) {
+  ## ...: Other commands to pass to plot
+  N <- length(vector)
+  ref <- (1:N - 0.5)/ N
+  x <- -log10(ref)
+  y <- -log10(sort(vector))
+  
+  ## CIs...
+  u <- l <- rep(0,N)
+  for(i in 1:N){
+    u[i] <- qbeta(0.975,i,N-i+1)
+    l[i] <- qbeta(0.025,i,N-i+1)
+  }
+  u <- -log10(u)
+  l <- -log10(l)
+
+  selectvector <- rep(T, N)
+    
+  if(!is.null(tail)) {
+    selectvector <- rep(F, N)
+    selectvector[1:tail] <- T
+  }
+  
+  if(resolution > 0) {
+    
+    ### Nipped from my general collection ###
+    nearest.neighbour <- function (vec, ref.vec, selectvector = F) 
+    {
+      mat <- matrix(1, length(ref.vec), 1) %*% vec
+      ref.mat <- ref.vec %*% matrix(1, 1, length(vec))
+      abs.diff <- abs(mat - ref.mat)
+      colmin <- apply(abs.diff, 2, min)
+      selected <- abs.diff == (matrix(1, length(ref.vec), 1) %*% 
+                                 colmin)
+      selected.col <- rowSums(selected) > 0
+      if (!selectvector) 
+        return(ref.vec[as.vector(selected.col)])
+      else return(as.vector(selected.col))
+    }
+    
+    select <- nearest.neighbour(seq(0, max(x),by=resolution),
+                                ref.vec=x, selectvector=T)
+    selectvector[!select] <- F
+    
+  }
+
+  if(!nodraw) {
+    plot(x[selectvector],y[selectvector],asp=asp,xlab=xlab,ylab=ylab,...)
+    abline.options$a <- 0
+    abline.options$b <- 1
+    do.call("abline", abline.options)
+    cilines.options$x <-x[selectvector]
+    cilines.options$y <- l[selectvector]
+    do.call("lines", cilines.options)
+    cilines.options$y <- u[selectvector]
+    do.call("lines", cilines.options)
+  }
+  
+  return(invisible(list(x=x,y=y,u=u,l=l, selectvector=selectvector)))
+
+}
