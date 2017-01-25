@@ -21,9 +21,10 @@ filename.seed <- function(filename="test", seed=NULL, prompt=T) {
     } else {
       input <- paste(commandArgs(T), collapse=" ")
     }
-    input <- strsplit(input, ";")[[1]]
-    input <- gsub("^[[:space:]]+", "", input)
-    input <- gsub("[[:space:]]+$", "", input)
+    input <- strsplit(input, ";|\\s+")[[1]]
+    input <- input[input != ""]
+    # input <- gsub("^[[:space:]]+", "", input)
+    # input <- gsub("[[:space:]]+$", "", input)
     if(length(input) > 0) seed <- input[1]
   }
 
