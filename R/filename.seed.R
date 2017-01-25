@@ -13,13 +13,17 @@ filename.seed <- function(filename="test", seed=NULL, prompt=T) {
   # If myscript includes filename.seed(), this will set the seed to 245
   #   have the script run.
 
+  input <- ""
   if(is.null(seed)) {
     seed  <- as.integer((as.numeric(Sys.time()) %% 86400) * 100)
     if(interactive() && prompt) {
-      input <- strsplit(readline("seed? "), "\\s+")[[1]]
+      input <- readline("seed? ")
     } else {
-      input <- commandArgs(T)
+      input <- paste(commandArgs(T), collapse=" ")
     }
+    input <- strsplit(input, ";")[[1]]
+    input <- gsub("^[[:space:]]+", "", input)
+    input <- gsub("[[:space:]]+$", "", input)
     if(length(input) > 0) seed <- input[1]
   }
 
