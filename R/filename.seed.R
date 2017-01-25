@@ -17,11 +17,10 @@ filename.seed <- function(filename="test", seed=NULL, prompt=T) {
     seed  <- as.integer((as.numeric(Sys.time()) %% 86400) * 100)
     if(interactive() && prompt) {
       input <- strsplit(readline("seed? "), "\\s+")[[1]]
-      if(input != "") seed <- input[1]
     } else {
       input <- commandArgs(T)
-      if(length(input) > 0) seed <- input[1]
     }
+    if(length(input) > 0) seed <- input[1]
   }
 
   set.seed(seed)
