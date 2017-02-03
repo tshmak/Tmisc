@@ -18,12 +18,26 @@ sparseSummary2sparseMatrix <- function(i,j,x,square=F, symmetric=F,
       stopifnot(length(levels.j) == length(unique(levels.j)))
   }
   
+  if(is.numeric(i) && !is.numeric(levels.i)) {
+    stop("i is numeric but levels.i is not")
+  }
+  if(!is.numeric(i) && is.numeric(levels.i)) {
+    stop("i is not numeric but levels.i is")
+  }
+  if(is.numeric(j) && !is.numeric(levels.j)) {
+    stop("j is numeric but levels.j is not")
+  }
+  if(!is.numeric(j) && is.numeric(levels.j)) {
+    stop("j is not numeric but levels.j is")
+  }
+  
   if(sort) {
     levels.i <- sort(levels.i)
     levels.j <- sort(levels.j)
   }
-  ii <- (factor(i, levels = as.character(levels.i)))
-  jj <- (factor(j, levels = as.character(levels.j)))
+
+  ii <- (factor(i, levels = levels.i))
+  jj <- (factor(j, levels = levels.j))
   if(sum(is.na(ii)) + sum(is.na(jj) > 0)) 
     stop("The levels (or levels.i or levels.j) given don't correspond to actual levels.")
   nlevels <- length(levels)
