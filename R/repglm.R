@@ -22,7 +22,10 @@ repglm <- function(y, x, covariates=NULL, return, constant=T,
     arguments <- c(list(x=touse,y=y), glm.args)
     glm.res <- do.call("glm.fit", arguments)
     if(add.something) eval(toexecute)
-    res <- c(res, list(glm.res[[return]]))
+    Res <- glm.res[[return]]
+    if(i == 1) res <- rep(list(Res), ncol(x)) else {
+      res[[i]] <- Res
+    }
   }
   
   res
