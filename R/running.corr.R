@@ -23,7 +23,7 @@ running.corr <- function(X,depth=10, covariance=F) {
       start <- start + len
     }
     
-    to.return <- sparseMatrix(i=ijx[,1], j=ijx[,2], x=ijx[,3],
+    to.return <- Matrix::sparseMatrix(i=ijx[,1], j=ijx[,2], x=ijx[,3],
                               dims=c(ncol, ncol), sym=T)
     diag(to.return) <- 1
     
@@ -44,7 +44,7 @@ running.corr <- function(X,depth=10, covariance=F) {
       start <- start + len
     }
     
-    to.return <- sparseMatrix(i=ijx[,1], j=ijx[,2], x=ijx[,3],
+    to.return <- Matrix::sparseMatrix(i=ijx[,1], j=ijx[,2], x=ijx[,3],
                               dims=c(ncol, ncol), sym=T)
     
   }

@@ -15,12 +15,11 @@ QC <- function(X, MAF.min=0.05, HWE.min=1e-6, batch=F, ...) {
     
   }
   else {
-    require(ff)
-    colMeans <- ffcolapply(colMeans(X[,i1:i2,drop=F]), X=X, RETURN=T, 
+    colMeans <- ff::ffcolapply(colMeans(X[,i1:i2,drop=F]), X=X, RETURN=T, 
                            CFUN="c", USE.NAMES=F, ...)
     select <- (1 - abs(1-colMeans)) > MAF.min
     
-    HWE <- ffcolapply(HWE.chisq.matrix(X[,i1:i2,drop=F]), X=X, RETURN=T, 
+    HWE <- ff::ffcolapply(HWE.chisq.matrix(X[,i1:i2,drop=F]), X=X, RETURN=T, 
                       CFUN="c",  USE.NAMES=F, ...)
     select <- select & HWE > HWE.min
   }

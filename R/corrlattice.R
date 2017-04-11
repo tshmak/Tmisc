@@ -1,4 +1,3 @@
-require(lattice)
 corrlattice <- function(data, skip=1, size=100, Steps=10, 
                         start.col=NULL, nodraw=F, r2=F, 
                         abs=F, corr=NULL, random=F) {
@@ -41,9 +40,9 @@ corrlattice <- function(data, skip=1, size=100, Steps=10,
   }
   
   if(!nodraw) {
-    toplot <- levelplot(corr, main="", xlab="", ylab="", 
+    toplot <- lattice::levelplot(corr, main="", xlab="", ylab="", 
             col.regions=col.regions, at=at)
-    plot(toplot)
+    lattice::plot.levelplot(toplot)
   }
   return(invisible(corr))
   
