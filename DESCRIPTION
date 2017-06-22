@@ -7,4 +7,6 @@ Authors@R: person("First", "Last", email = "first.last@example.com", role = c("a
 Description: More about what it does (maybe more than one line)
 License: What license is it under?
 LazyData: TRUE
-Imports: ggplot2
+Imports:
+    ggplot2
+RoxygenNote: 5.0.1
