@@ -14,8 +14,8 @@ matchpos <- function(tomatch, ref.df,
   #' @param tomatch A data.frame or data.table
   #' @param ref.df A data.frame or data.table
 
-  tomatch <- as.data.table(tomatch)
-  ref.df <- as.data.table(ref.df)
+  tomatch <- data.table::as.data.table(tomatch)
+  ref.df <- data.table::as.data.table(ref.df)
 
   #### Column matching function ####
   match.col <- function(test, target, default.targets, auto.detect=T, silent=F) {
@@ -126,10 +126,25 @@ matchpos <- function(tomatch, ref.df,
   tomatch$.index.tomatch <- 1:nrow(tomatch)
   ref.df$.index.ref <- 1:nrow(ref.df)
 
+  #### compare modes ####
+  modes <- sapply(tomatch[,match.cols.names], mode)
+  modes.ref <- sapply(ref.df[,ref.match.cols.names], mode)
+  notequal <- modes != modes.ref
+  if(any(notequal)) {
+    mode(tomatch[, match.cols.names[notequal]]) <- "character"
+    mode(ref.df[, ref.match.cols.names[notequal]]) <- "character"
+  }
+  
   #### MERGE ####
   merged <- merge(ref.df, tomatch, all=F,
                   by.x=ref.match.cols.names, by.y=match.cols.names)
-  setkey(merged, .index.ref)
+  data.table::setkey(merged, .index.ref)
+  if(nrow(merged) == 0) {
+    return(list(order=integer(0), 
+                ref.extract=rep(F, nrow(ref.df)), 
+                rev=NULL,
+                mismatches=NULL))
+  }
 
   alt.col2 <- alt.col + ncol(ref.df) - n.match.cols
   ref.col2 <- ref.col + ncol(ref.df) - n.match.cols

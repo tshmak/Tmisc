@@ -1,4 +1,3 @@
-require(Matrix)
 running.corr <- function(X,depth=10, covariance=F) {
   ### Function for generating the correlation matrix of a SNP frequency matrix
   ### Matrix stored as sparseMatrix object
