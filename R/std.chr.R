@@ -23,5 +23,6 @@ std.chr <- function(chr, prefix="", XYM=TRUE) {
       print(problems)
     }
   }
+  CHR <- paste0("chr", CHR)
   return(CHR)
 }

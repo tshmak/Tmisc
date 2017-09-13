@@ -1,5 +1,5 @@
-repglm.wrapper <- function(..., type=c("deviance", "coefficients", 
-                                       "lrt.p")
+repglm.wrapper <- function(..., type=c("deviance", "coefficients",
+                                       "lrt.p", "coef_n_se")
                            , help=F) {
 
   if(help) {
@@ -18,12 +18,11 @@ repglm.wrapper <- function(..., type=c("deviance", "coefficients",
     return <- "res"
     intermediate.instructions <- '{
       glm.res$res <- c(glm.res$deviance, glm.res$df.residual)
-      print.counter(i, skip=100)
     }'
   } else if(type == "coefficients") {
     return <- "coefficients"
     intermediate.instructions <- NULL
-  } else if(type == "lrt.p") { 
+  } else if(type == "lrt.p") {
     ## Null model ##
     options <- list(...)
     cons <- rep(1, length(options$y))
@@ -35,11 +34,19 @@ repglm.wrapper <- function(..., type=c("deviance", "coefficients",
     ## Non-null model ##
     g <- repglm.wrapper(..., type="deviance")
     p <- sapply(g, function(X) pchisq(q=g0$deviance - X[1],
-                                      df=g0$df.residual - X[2], 
+                                      df=g0$df.residual - X[2],
                                       lower.tail = F))
     return(p)
+  } else if(type == "coef_n_se") {
+    return <- "res"
+    intermediate.instructions <- '{
+      class(glm.res) <- "glm"
+      se <- sqrt(diag(vcov(glm.res)))
+      glm.res$res <- data.frame(coef=glm.res$coefficients,
+                                se=se)
+    }'
   }
-  g <- repglm(..., return = return, 
+  g <- repglm(..., return = return,
               intermediate.instructions = intermediate.instructions)
   return(g)
 

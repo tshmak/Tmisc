@@ -127,8 +127,8 @@ matchpos <- function(tomatch, ref.df,
   ref.df$.index.ref <- 1:nrow(ref.df)
 
   #### compare modes ####
-  modes <- sapply(tomatch[,match.cols.names], mode)
-  modes.ref <- sapply(ref.df[,ref.match.cols.names], mode)
+  modes <- sapply(tomatch[,match.cols.names, drop=F], mode)
+  modes.ref <- sapply(ref.df[,ref.match.cols.names, drop=F], mode)
   notequal <- modes != modes.ref
   if(any(notequal)) {
     mode(tomatch[, match.cols.names[notequal]]) <- "character"
