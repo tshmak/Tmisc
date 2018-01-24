@@ -33,7 +33,11 @@ sparseSummary2sparseMatrix <- function(i,j,x,square=F, symmetric=F,
   
   if(sort) {
     levels.i <- sort(levels.i)
-    levels.j <- sort(levels.j)
+    if(square) {
+      levels.j <- levels <- levels.i
+    } else {
+      levels.j <- sort(levels.j)
+    }
   }
 
   ii <- (factor(i, levels = levels.i))
@@ -48,22 +52,18 @@ sparseSummary2sparseMatrix <- function(i,j,x,square=F, symmetric=F,
     mat <- Matrix::sparseMatrix(i=as.integer(ii),j=as.integer(jj),x=x, 
                         symmetric = symmetric, ...)
   }
-  if(!square) {
-    rownames <- unique(i)
-    colnames <- unique(j)
-  } else {
-    rownames <- levels
-    colnames <- levels
-  }
-  
+
+  rownames <- levels
+  colnames <- levels
+
   rownames <- as.character(rownames)
   colnames <- as.character(colnames)
   
-  if(sort) {
-    rownames <- sort(rownames)
-    colnames <- sort(colnames)
-  }
-  
+  # if(sort) {
+  #   rownames <- sort(rownames)
+  #   colnames <- sort(colnames)
+  # }
+  # 
   rownames(mat) <- rownames
   colnames(mat) <- colnames
   
