@@ -1,7 +1,7 @@
 plot.qqplot_pvals <- function(obj,
                               asp=1, 
-                              xlab=expression("Expected -log"[10]*"(p)"),
-                              ylab=expression("Observed -log"[10]*"(p)"),
+                              xlab=expression("-log"[10]*"(Expected p)"),
+                              ylab=expression("-log"[10]*"(Observed p)"),
                               add=FALSE, 
                               ..., abline.options=list(), cilines.options=list()) {
   

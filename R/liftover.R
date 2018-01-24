@@ -1,4 +1,4 @@
-liftover <- function(chr, pos, pos2=NULL, from, to) {
+liftover <- function(chr, pos, pos2=NULL, from, to, bedformat=FALSE) {
   #' Program to perform liftover of coordinates using LiftOver
   #' using program from https://genome.ucsc.edu/cgi-bin/hgLiftOver
   
@@ -18,7 +18,7 @@ liftover <- function(chr, pos, pos2=NULL, from, to) {
   stopifnot(file.exists(liftover))
   
   if(is.null(pos2)) pos2 <- pos
-  pos1 <- pos - 1
+  if(!bedformat) pos1 <- pos - 1 else pos1 <- pos
   chr <- std.chr(chr, prefix="chr", XYM = TRUE)
   bed <- data.frame(chr=chr, from=pos1, to=pos2, 
                                 order=1:length(chr))
@@ -39,17 +39,23 @@ liftover <- function(chr, pos, pos2=NULL, from, to) {
   system(cmd)
   newbed <- data.table::fread(newbedfile)
   colnames(newbed) <- c("chr", "from", "to", "order")
-  fail <- read.table.tim(newfailfile, comment="#")
-  stopifnot(nrow(fail) + nrow(newbed) == nrow(bed))
-  colnames(fail) <- c("chr", "from", "to", "order")
-  result <- rbind(newbed, fail)
+  if(file.size(newfailfile) > 0) {
+    fail <- read.table.tim(newfailfile, comment="#")
+    stopifnot(nrow(fail) + nrow(newbed) == nrow(bed))
+    colnames(fail) <- c("chr", "from", "to", "order")
+    result <- rbind(newbed, fail)
+  } else {
+    stopifnot(nrow(newbed) == nrow(bed))
+    result <- newbed
+  }
   result <- result[order(result$order), ]
+  
+  if(bedformat) pos <- result$from else pos <- result$from + 1
 
   if(is.null(POS2)) {
-    return(data.frame(chr=result$chr, pos=result$from + 1))
+    return(data.frame(chr=result$chr, pos=pos))
   } else {
-    return(data.frame(chr=result$chr, pos=result$from + 1, 
-                      pos2=result$to))
+    return(data.frame(chr=result$chr, pos=pos, pos2=result$to))
   }
   
 }

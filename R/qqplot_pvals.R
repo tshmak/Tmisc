@@ -11,7 +11,16 @@ qqplot_pvals <- function(vector, nodraw=F,
   stopifnot(vector <= 1 & vector >= 0)
 
   N <- length(vector)
-  ref <- (1:N - 0.5)/ N
+  # ref <- (1:N - 0.5)/ N # I've used this formula prior to 19/10/2017, 
+  # but it's wrong
+  ref <- (1:N)/ (N+1) # This is Expected(p). However, it doesn't mean 
+  # E(-log10(p)) = -log10(E(p))!
+  # 
+  # Nonetheless, this seems to be more useful than E(-log10(p)), not only 
+  # because it is easier to compute. It means that the BH criteria for
+  # fdr control is simply a diagonal line on the graph with gradient 1 
+  # and intercept -log10(alpha) - log10(n+1/n)
+  
   x <- -log10(ref)
   y <- -log10(sort(vector))
 

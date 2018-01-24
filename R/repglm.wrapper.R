@@ -30,6 +30,8 @@ repglm.wrapper <- function(..., type=c("deviance", "coefficients",
     options$x <- cbind(cons, options$covariates)
     options$covariates <- NULL
     options$cluster <- NULL
+    options$trace <- NULL
+    options$rm.na <- NULL
     g0 <- do.call("glm.fit", options)
     ## Non-null model ##
     g <- repglm.wrapper(..., type="deviance")

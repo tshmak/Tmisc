@@ -33,6 +33,7 @@ repglm <- function(x, y, covariates=NULL, return=NULL, constant=T,
     l <- parallel::parLapply(cluster, X, repglm, y=y, covariates=covariates,
                              return=return, constant=constant,
                              intermediate.instructions=intermediate.instructions,
+                             glm.function=glm.function, trace=trace, rm.na=rm.na, 
                              ...)
     return(do.call("c",l))
   }
@@ -55,7 +56,7 @@ repglm <- function(x, y, covariates=NULL, return=NULL, constant=T,
 
   ytouse <- y
   for(i in 1:ncol) {
-    if(trace > 0) mysimtools::print.counter(i, skip=100,ncol)
+    if(trace > 0) mysimtools::print.counter(i, skip=100,max=ncol)
     X <- do.call("cbind", lapply(x, f))
     if (constant) touse <- cbind(1, X, covariates) else
       touse <- cbind(X, covariates)

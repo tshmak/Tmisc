@@ -3,7 +3,10 @@ cond.repglm <- function(x, y, r2=0.9, p.threshold = 5e-8, cluster=NULL,
                         trace=0, detailed.output=F) {
   #' Perform conditional analysis a la Yang et al (2012) Nature Genetics
   min2 <- function(p) min(p, na.rm=TRUE)
-  max2 <- function(p) max(p, na.rm=TRUE)
+  max2 <- function(p) {
+    if(all(is.na(p))) return(NA) else 
+    return(max(p, na.rm=TRUE))
+  }
   
   
   if(is.null(to.test)) {
@@ -23,6 +26,10 @@ cond.repglm <- function(x, y, r2=0.9, p.threshold = 5e-8, cluster=NULL,
   if(!is.null(options$constant)) 
     stop("Must have constant")
   
+  # cors.save <- NULL
+  # I wanted to save the correlations for output but decided it's not worth
+  # it cos cond.pos can increase or decrease at each step, and to.test
+  # is also different. It's easier just to do a total cor at the end. 
   while(sum(to.test) > 0) {
     
     if(length(cond.pos) == 0) {
@@ -32,20 +39,23 @@ cond.repglm <- function(x, y, r2=0.9, p.threshold = 5e-8, cluster=NULL,
       ### Testing for collinearity 1 ###
       included.cols <- x[,cond.pos, drop=F]
       to.test[cond.pos] <- F
-      cors <- cor(included.cols, x[,to.test, drop=F], use = "pairwise")^2
-      max.cors <- as.vector(apply(cors, 2, max2))
+      suppressWarnings(
+        cors <- cor(x[,to.test, drop=F], included.cols, use = "pairwise"))
+      max.cors <- as.vector(apply(cors^2, 1, max2))
       to.test[max.cors >= r2] <- F
     }
     if(trace > 0) {
       print(cond.pos)
     }
     p <- repglm.wrapper(y=y, x=x[,to.test, drop=F], cluster=cluster, 
-                        covariates=included.cols, ..., type="lrt")
+                        covariates=included.cols, trace=trace-1, ..., 
+                        type="lrt")
     if(detailed.output) {
       pp <- rep(NA, nrow(detailed.p))
       pp[to.test] <- p
       detailed.p <- cbind(detailed.p, pp)
-    }
+      # cors.save <- c(cors.save, list(cors, to.test))
+    } 
     min.p.pos <- which(p == min2(p))[1]
     
     if(p[min.p.pos] > p.threshold) {
