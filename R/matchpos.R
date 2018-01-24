@@ -141,7 +141,7 @@ matchpos <- function(tomatch, ref.df,
   #### MERGE ####
   merged <- merge(ref.df, tomatch, all=F, 
                   by.x=ref.match.cols.names, by.y=match.cols.names)
-  setkey(merged, .index.ref)
+  data.table::setkey(merged, .index.ref)
   merged <- as.data.frame(merged)
 
   alt.col2 <- alt.col + ncol(ref.df) - n.match.cols
