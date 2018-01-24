@@ -16,21 +16,21 @@ strr <- function(object, nmax=10, tail=F) {
   if(is.data.frame(object)) {
     ncol <- ncol(object)
     if(ncol > nmax) {
-      str(object[,cols])
+      str(object[,cols], give.attr=F)
       cat(paste("data.frame with", ncol, 
                 "columns. Only", description, nmax, "columns shown\n"))
     } else {
-      str(object, 1)
+      str(object, 1, give.attr=F)
     }
   } else if(is.list(object)) {
     len <- length(object)
     if(len > nmax) {
-      str(object[cols], 1)
+      str(object[cols], 1, give.attr=F)
       cat(paste("list with", len, "elements. Only", description, nmax, "shown.\n"))
     } else {
-      str(object, 1)
+      str(object, 1, give.attr=F)
     }
   } else {
-    str(object, 1)
+    str(object, 1, give.attr=F)
   }
 }
