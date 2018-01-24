@@ -1,6 +1,19 @@
 fill.in.results.table <- function(table.name="results.table", ...) {
   ## ...: Supply descriptor values
   arguments <- list(...)
+  
+  ## Other variables
+  if(exists("results.table.vars", envir=.GlobalEnv, inherits=FALSE)) {
+    vars <- get("results.table.vars", envir=.GlobalEnv, inherits=FALSE)
+    stopifnot(is.character(vars))
+    l <- list()
+    for(i in 1:length(vars)) {
+      l[[i]] <- get(vars[i], envir=.GlobalEnv, inherits=FALSE)
+    }
+    names(l) <- vars
+    arguments <- c(arguments, l)
+  }
+  
   arguments <- lapply(arguments, as.vector)
   lengths <- sapply(arguments, length)
   maxlength <- max(lengths)

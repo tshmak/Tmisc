@@ -1,4 +1,5 @@
-load.results <- function(pattern, path=".", ext=".RData", prompt=T, append=F) {
+load.results <- function(pattern, path=".", ext=".RData", ..., 
+                         prompt=T, append=F) {
   #' Load a bunch of .RData files and have them append.results() together
   # path <- "."; ext <- ".RData"
   ext <- ifelse(substr(ext, 1,1) == ".", ext, paste0(".", ext))
@@ -17,10 +18,11 @@ load.results <- function(pattern, path=".", ext=".RData", prompt=T, append=F) {
       if(yesno %in% c("a", "A")) prompt <- F
     }
     if(load) {
-      if(first) {
-        load(toload, envir=.GlobalEnv) 
-        first <- FALSE 
-      } else append.results(toload)
+      # if(first) {
+      #   load(toload, envir=.GlobalEnv)
+      #   first <- FALSE
+      # } else append.results(toload)
+      append.results(toload, ...)
     }
   }
 

@@ -34,7 +34,7 @@ Rfilename <- function(filename="test", seed=NULL, set.seed=TRUE) {
     seed <- as.integer((as.numeric(Sys.time()) %% 86400) * 100)
     if(length(input) > 0) {
       Seed <- input[1] 
-      if(is.numeric(Seed)) seed <- Seed
+      if(is.numeric(as.integer(Seed))) seed <- Seed
     } 
   }
 
