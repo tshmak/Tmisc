@@ -7,7 +7,6 @@ install.packages <- function(..., repos=getOption("repos")) {
   if(!is.null(repos) && grepl("mran\\.microsoft\\.com", repos)) {
     date.repos <- sub(paste0(".*(", date, ")"), "\\1", repos)
     date.libPaths <- sub(paste0(".*(", date, ")"), "\\1", libPaths)
-    
     avail.repos <- which(date.libPaths == date.repos)
     if(length(avail.repos) > 0) {
       message("Installing from MRAN to ", libPaths[avail.repos])
@@ -18,8 +17,9 @@ install.packages <- function(..., repos=getOption("repos")) {
   } 
   libPaths <- c(list(...)$lib, libPaths)
   if(grepl(paste0(date, "$"), libPaths[1])) {
+    date.libPaths1 <- sub(paste0(".*(", date, ")"), "\\1", libPaths[1])
     stop(paste("Default library is associated with", 
-               date.libPaths[avail.repos], 
+               date.libPaths1, 
                ". Specify another lib location to install."))
   }
   message("Installing to ", libPaths[1])
