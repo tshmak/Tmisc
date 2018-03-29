@@ -1,7 +1,7 @@
-corrlattice <- function(data, size=Inf, 
+corrlattice <- function(data, size=Inf, MAF=NULL, 
                         nodraw=F, r2=F, abs=F, 
                         maxsize=300, use="pairwise.complete.obs", 
-                        tick.number=10) {
+                        tick.number=10, ...) {
 
   if(size > ncol(data)) {
     size <- ncol(data)
@@ -11,7 +11,15 @@ corrlattice <- function(data, size=Inf,
     "The size of", size, "may be too big. Set it to less than", maxsize
   ))
 
-  selected <- round(seq(1, ncol(data), length=size))
+  if(!is.null(MAF)) {
+    if(length(MAF) != ncol(data)) {
+      stop("Length of MAF must match number of columns of data.")
+    }
+    o <- order(abs(MAF - 0.5))
+    selected <- sort(o[1:size])
+  } else {
+    selected <- round(seq(1, ncol(data), length=size))
+  }
   
   if(!isSymmetric(data)) {
     corr <- cor(data[,selected], use=use) 
@@ -43,7 +51,8 @@ corrlattice <- function(data, size=Inf,
     toplot <- lattice::levelplot(corr, main="", 
                                  xlab="", ylab="", 
                                  scales=list(at=ticks), 
-                                 col.regions=col.regions, at=at)
+                                 col.regions=col.regions, 
+                                 at=at, ...)
     plot(toplot)
   }
   return(invisible(corr))
