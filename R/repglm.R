@@ -33,7 +33,7 @@ repglm <- function(x, y, covariates=NULL, return=NULL, constant=T,
     l <- parallel::parLapply(cluster, X, repglm, y=y, covariates=covariates,
                              return=return, constant=constant,
                              intermediate.instructions=intermediate.instructions,
-                             glm.function=glm.function, trace=trace, rm.na=rm.na, 
+                             glm.function=glm.function, trace=trace, rm.na=rm.na,
                              ...)
     return(do.call("c",l))
   }
@@ -48,11 +48,14 @@ repglm <- function(x, y, covariates=NULL, return=NULL, constant=T,
   }
   else add.something <- F
 
-  f<- function(X) X[,i]
+  f<- function(X) X[,i, drop=F]
 
   for(j in 1:length(x)) {
     if(is.vector(x[[j]])) x[[j]] <- matrix(x[[j]], ncol=1)
+    colnames(x[[j]]) <- rep(paste0("x", j), ncol)
   }
+  if(!is.null(covariates)) colnames(covariates) <-
+    paste0("covar", 1:ncol(covariates))
 
   ytouse <- y
   for(i in 1:ncol) {
