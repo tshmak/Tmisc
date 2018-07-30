@@ -1,4 +1,4 @@
-recode <- function(vec, ..., copy=FALSE, as.factor=T, NArecode=NA, others=NA) {
+recode <- function(vec, ..., copy=FALSE, as.factor=T, NArecode=NA, others=NULL) {
   
   ### Function to recode categorical variables
   
@@ -22,7 +22,9 @@ recode <- function(vec, ..., copy=FALSE, as.factor=T, NArecode=NA, others=NA) {
   }
   
   names <- unlist(list)
-  y[!(vec %in% names)] <- others
+  if(!is.null(others)) {
+    y[!(vec %in% names)] <- others
+  }
   y[is.na(vec)] <- NArecode
   
   if(as.factor) y <- as.factor(y)
