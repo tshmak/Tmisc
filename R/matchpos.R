@@ -21,40 +21,6 @@ matchpos <- function(tomatch, ref.df,
   tomatch <- data.table::as.data.table(tomatch)
   ref.df <- data.table::as.data.table(ref.df)
 
-  #### Column matching function ####
-  match.col <- function(test, target, default.targets, auto.detect=T, silent=F) {
-    mustfind <- target != ""
-    if(mustfind) {
-      test2 <- test
-      targets2 <- target
-    } else if(auto.detect) {
-      test2 <- tolower(substr(test,1,3))
-      targets2 <- tolower(substr(default.targets,1,3))
-      target <- default.targets[1]
-    } else return(integer(0))
-
-    pos <- test2 == targets2[1]
-    if(length(targets2) > 1) {
-      for(i in 2:length(targets2)) {
-        pos <- pos | test2 == targets2[i]
-      }
-    }
-    pos <- which(pos)
-    if(length(pos) > 1) {
-      vars <- paste(test[pos], collapse = ", ")
-      mess <- paste0("Multiple columns for ", target, ". Possible matches: ", vars)
-      stop(mess)
-    } else if(length(pos) == 1) {
-      if(!silent) cat(paste(test[pos], "identified as", default.targets[1], "\n"))
-    } else if(mustfind) {
-      stop(paste("No column identified for ", target))
-    } else {
-      if(!silent) cat("No column identified for ", default.targets[1], "\n")
-    }
-
-    return(pos)
-  }
-
   #### Identify columns ####
   colnames.tomatch <- colnames(tomatch)
   if(!silent) cat("For 'tomatch' data.frame: \n")
@@ -145,9 +111,9 @@ matchpos <- function(tomatch, ref.df,
   merged <- as.data.frame(merged)
 
   alt.col2 <- alt.col + ncol(ref.df) - sum(match.cols < alt.col)
-  ref.col2 <- ref.col + ncol(ref.df) - sum(match.cols < alt.col)
-  ref.alt.col2 <- ref.alt.col
-  ref.ref.col2 <- ref.ref.col
+  ref.col2 <- ref.col + ncol(ref.df) - sum(match.cols < ref.col)
+  ref.alt.col2 <- ref.alt.col + sum(match.cols > ref.alt.col)
+  ref.ref.col2 <- ref.ref.col + sum(match.cols > ref.ref.col)
 
   #### Change everything to capital letters ####
   if(tomatch.alt) merged[,alt.col2] <- toupper(merged[,alt.col2])
