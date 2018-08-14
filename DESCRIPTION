@@ -4,8 +4,8 @@ Title: My general utilities for data analyses
 Version: 0.1
 Date: 2015-11-09
 Authors@R: person("Timothy", "Mak", email = "timmak@yahoo.com", role = c("aut", "cre"))
-Maintainer: Who to complain to <yourfault@somewhere.net>
+Maintainer@R: person("Timothy", "Mak", email = "timmak@yahoo.com", role = c("aut", "cre"))
 Description: General utilities for data analyses
 License: What license is it under?
 LazyData: TRUE
-Imports: Matrix, lattice, data.table,graphics, utils
+Imports: Matrix,lattice, data.table,graphics,utils,ggplot2
