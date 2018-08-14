@@ -8,4 +8,5 @@ Maintainer@R: person("Timothy", "Mak", email = "timmak@yahoo.com", role = c("aut
 Description: General utilities for data analyses
 License: What license is it under?
 LazyData: TRUE
-Imports: Matrix,lattice, data.table,graphics,utils,ggplot2
+Imports: Matrix,lattice,data.table,ggplot2
+Depends: methods,utils,graphics,stats
