@@ -13,9 +13,13 @@ options(.rootdir=.rootdir,
         .rootdir.windows=.rootdir.windows,
         .rootdir.server=.rootdir.server)
 
-source(paste0(.rootdir, "/WORK/myRpackages/Startup/R/attachroot.R"))
-source(paste0(.rootdir, "/WORK/myRpackages/Startup/R/Tim.load.R"))
+Startup <- new.env()
+startup.funcs <- c("clear", "attachroot", "Tim.load", "Tmisc", "devel")
+for(f in startup.funcs) {
+  sys.source(paste0(.rootdir, "/WORK/myRpackages/Tmisc/R/", f, ".R"), envir=Startup)  
+}
 
+attach(Startup)
 
 #### Setting up local libraries ####
 repos <- getOption("repos")[1]
@@ -84,24 +88,4 @@ if(!interactive()) {
   }
 }
 
-#### Load default libraries ####
-# require(utils)
-# require(graphics)
-# require(methods)
-
-# if(require(devtools) && require(roxygen2)) {
-#   # My own libraries are loaded here
-  Tim.load(Startup)
-#   # Maybe I should create another package to separate the startup scripts and the general scripts
-#   # in General.
-# } else {
-#   recommended.packages <- c("devtools",
-#                             "roxygen2",
-#                             "data.table",
-#                             "ggplot2")
-#   message("devtools and/or roxygen2 not yet installed. I recommend installing ",
-#           paste(recommended.packages, collapse=", "))
-# }
-
-#### Cleanup ####
 rm(list=ls(all=T))

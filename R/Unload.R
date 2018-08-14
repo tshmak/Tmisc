@@ -1,4 +1,4 @@
-unload <- function(name) {
+Unload <- function(name) {
   if(try(class(name),silent=T)=="character") Name <- name
   else Name <- deparse(substitute(name))
   
