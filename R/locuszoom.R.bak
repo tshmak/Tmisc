@@ -1,0 +1,235 @@
+locuszoom <- function(data=NULL,
+                      epacts=NULL,
+                      metal=NULL,
+                      ld=NULL,
+                      locuszoom.dir="~/software/locuszoom_tim/",
+                      ...) {
+
+  #' @title Wrapper around locuszoom (1.4)
+  #' @details Note that the conf/m2zfast.conf file in locuszoom must be set up to point to the various
+  #' dependent programs first. The github version of locuszoom (statgen/locuszoom-standalone) appears to be missing
+  #' the conf/m2zfast.conf file as of 19/4/2018. If that's the case, simply clone a copy of
+  #' conf/dist.conf as conf/m2zfast.conf, and modify the various variables.
+
+  #### Work in new directory ####
+  curdir <- getwd()
+  setwd(tempdir())
+  newdir <- tempfile("lz")
+  dir.create(newdir)
+  setwd(newdir)
+  wdir <- getwd()
+  if(keepfiles <- TRUE) {
+    on.exit(setwd(curdir))
+  } else {
+    on.exit({
+      setwd(curdir)
+      unlink(wdir)
+    })
+  }
+
+  #### Locuszoom exec ####
+  locuszoom.exec <- paste0(locuszoom.dir, "/bin/locuszoom")
+  cmd <- locuszoom.exec
+
+  #### Options ####
+  commonOptions <- list(scalar=c("build", "pop", "source"),
+                        region=c("chr", "start", "end", "flank"),
+                        data=c("metal", "epacts"),
+                        columns=c("pvalCol", "posCol", "markerCol"),
+                        ref=c("refsnp", "refgene"),
+                        control=c("verbose"),
+                        annotation=c("annot", "ld", "recomb"))
+
+  # cat("Some options you may need...\n")
+  # print(commonOptions)
+
+  options <- list(...)
+  if(any(sapply(options, is.list))) {
+    stop("The options shouldn't be lists")
+  }
+
+  if(any(sapply(options, length) > 1)) {
+    stop("The options shouldn't be non-scalars")
+  }
+
+  #### Checks ####
+  if(is.null(data) + is.null(epacts) + is.null(metal) != 2) {
+    stop(paste("Exactly one of data, epacts, or metal must be specified.",
+               "Auto-detection of column names is only done on data."))
+  }
+
+  #### providing a data.frame ####
+  if(!is.null(data)) {
+    if(!is.data.frame(data)) {
+      stop("data should be a data.frame")
+    }
+
+    auto.detect.tomatch <- TRUE
+    silent <- FALSE
+    colnames <- colnames(data)
+
+    chr.col <- match.col(colnames, "", c("CHROMOSOME"), auto.detect.tomatch, silent=silent)
+    pos.col <- match.col(colnames, "", c("POSITION", "BP"), auto.detect.tomatch, silent=silent)
+    start.col <- match.col(colnames, "", c("begin", "start"), auto.detect.tomatch, silent=silent)
+    end.col <- match.col(colnames, "", c("end"), auto.detect.tomatch, silent=silent)
+    marker.col <- match.col(colnames, "", c("marker", "SNP", "rsid"), auto.detect.tomatch, silent=silent)
+    pval.col <- grep("^p[_\\.-]?(val|$)", colnames, ignore.case = T)
+    # weight.col <- match.col(colnames, "", c("weight", "N"), auto.detect.tomatch, silent=silent)
+
+    if(length(pval.col) == 0) {
+      stop("pval column cannot be identified.")
+    }
+
+    #### Determining whether we should use epacts or metal ####
+    if(length(chr.col) && (length(pos.col) || (length(start.col) && length(end.col)))) {
+      type <- "epacts"
+      if(length(start.col) && length(end.col)) {
+        dat <- data[, c(chr.col, start.col, end.col)]
+        colnames(dat) <- c("#CHROM", "BEGIN", "END")
+      } else if(length(pos.col)) {
+        dat <- data[, c(chr.col, pos.col, pos.col)]
+        colnames(dat) <- c("#CHROM", "BEGIN", "END")
+      } else {
+        stop("What happened?")
+      }
+
+      if(length(marker.col)) {
+        dat$MARKER_ID <- data[,marker.col]
+      }
+      pval.colname <- "PVALUE"
+
+    } else if(length(marker.col)) {
+      type <- "metal"
+      dat <- data.frame(MarkerName=data[, marker.col])
+      pval.colname <- "P-value"
+    }
+
+    dat <- cbind(dat, data[, pval.col])
+    colnames(dat)[ncol(dat)] <- pval.colname
+
+    # Other columns???
+    # if(length(weight.col) > 0) {
+    #   metal <- cbind(metal, data[,weight.col])
+    #   colnames(metal)[ncol(metal)] <- "Weight"
+    # }
+
+    data.file <- tempfile("locuszoom.data")
+    write.table.tim(dat, file=data.file)
+
+    cmd <- paste(cmd, paste0("--", type), data.file)
+
+  }
+
+  #### Epacts or metal ####
+  for(type in c("epacts", "metal")) {
+    thing <- get(type, inherits = FALSE)
+    if(!is.null(thing)) {
+      stopifnot((is.character(thing) && length(thing) == 1) || is.data.frame(thing))
+      if(is.data.frame(thing)) {
+        thing.file <- tempfile("locuszoom.data")
+        write.table.tim(thing, file=thing.file)
+        cmd <- paste(cmd, paste0("--", type), thing.file)
+      } else {
+        cmd <- paste(cmd, paste0("--", type), thing)
+      }
+    }
+  }
+
+  #### Parse other options and run! ####
+  cmd <- paste(cmd, parse.options(options))
+  system(cmd)
+
+  #### Load the objects back ####
+  newdir <- list.dirs()
+  stopifnot(length(newdir) == 2 && newdir[1] == ".")
+  setwd(newdir[2])
+  # require(grid)
+  # require(lattice)
+  #### Load the data into the locuszoom() environment. ####
+  load('data4graph.Rdata')
+
+  #### Load the functions into the locuszoom() environment. ####
+  #' Unfortunately, the functions stored in data4graph.Rdata cannot be used
+  #' because their enclosing environment is R_Globalenv. It is not possible to
+  #' change all of them easily, which means that it will always use
+  #' R_Globalenv to look for sub-functions, which means it can be easily
+  #' interfered by whatever is there.
+  functions.def <- parse(paste0(locuszoom.dir, "/bin/locuszoom.R"))
+  for(i in 1:length(functions.def)) {
+    test <- as.character(functions.def[i])
+
+    #### Load all the functions until this ####
+    stop.when.you.see.this <- "flags <- list"
+    if(substr(test, 1, nchar(stop.when.you.see.this)) == stop.when.you.see.this) {
+      break
+    }
+    #### ignore the options ####
+    if(substr(test, 1, 8) == "options(") {
+      next
+    }
+
+    eval(functions.def[i])
+  }
+
+  unwanted.globals <- c("omittedGenes")
+
+  for(i in 1:length(unwanted.globals)) {
+    ug <- unwanted.globals[i]
+    if(exists(ug, envir=.GlobalEnv)) {
+      stop(paste("Unfortunately, the R script over-writes",ug,
+                 "in the Global environment.",
+                 "Suggests renaming it to something else."))
+    }
+  }
+
+  zplot(metal,ld,recrate,refidx,nrugs=nrugs,args=args,postlude=args[['postlude']])
+
+  for(i in 1:length(unwanted.globals)) {
+    ug <- unwanted.globals[i]
+    if(exists(ug, envir=.GlobalEnv)) {
+      rm(ug, envir=.GlobalEnv)
+    }
+  }
+
+  # data.env <- attach('data4graph.Rdata')
+  # eval(zplot(metal,ld,recrate,refidx,nrugs=nrugs,args=args,postlude=args[['postlude']]),
+  #   envir=data.env)
+  # detach(2)
+
+  return(list(metal=metal,
+              ld=ld, recrate=recrate, args=args))
+
+}
+
+
+
+
+
+# Defaults taken from m2zfast.py
+# parser.set_defaults(
+#   multi = 1,
+#   delim = "\t",
+#   epacts_chrom_col = "#CHROM",
+#   epacts_beg_col = "BEGIN",
+#   epacts_end_col = "END",
+#   epacts_pval_col = "PVALUE",
+#   no_clean = False,
+#   no_ld = False,
+#   no_transform = False,
+#   build = None,
+#   ld_measure = 'rsquare',
+#   gwas_cat = None,
+#   plotonly = False,
+#   prefix = None,
+#   pvalcol = "P-value",
+#   snpcol = "MarkerName",
+#   verbose = False,
+#   pop = None,
+#   snpset = "Illu1M",
+#   rundir = ".",
+#   source = None,
+#   experimental = False,
+#   cache = "../ld_cache.db",
+# )
+
+

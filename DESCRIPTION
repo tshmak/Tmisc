@@ -1,11 +1,11 @@
-Package: General
+Package: Tmisc
 Type: Package
 Title: My general utilities for data analyses
 Version: 0.1
 Date: 2015-11-09
-Author: Who wrote it
+Authors@R: person("Timothy", "Mak", email = "timmak@yahoo.com", role = c("aut", "cre"))
 Maintainer: Who to complain to <yourfault@somewhere.net>
 Description: General utilities for data analyses
 License: What license is it under?
 LazyData: TRUE
-Imports: graphics, utils
+Imports: Matrix, lattice, data.table,graphics, utils
