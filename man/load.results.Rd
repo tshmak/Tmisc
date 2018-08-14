@@ -4,10 +4,9 @@
 \alias{load.results}
 \title{Load a bunch of .RData files and have them append.results() together}
 \usage{
-load.results(pattern, path = ".", ext = ".RData", prompt = T,
-  append = F)
+load.results(pattern, path = ".", ext = ".RData", ..., files = NULL,
+  prompt = T, append = F)
 }
 \description{
 Load a bunch of .RData files and have them append.results() together
 }
-

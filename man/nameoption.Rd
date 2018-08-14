@@ -8,7 +8,7 @@ options used in a simiulation, e.g. sim.10.DOM.R
 nameoption("sim.10.DOM.R", 2) --> 10
 nameoption("sim.10.DOM.R", 3) --> "DOM"}
 \usage{
-nameoption(filename, pos, split = ".", ...)
+nameoption(filename, pos, split = ".", fixed = T, ...)
 }
 \description{
 Function to extract option from a filename
@@ -17,4 +17,3 @@ options used in a simiulation, e.g. sim.10.DOM.R
 nameoption("sim.10.DOM.R", 2) --> 10
 nameoption("sim.10.DOM.R", 3) --> "DOM"
 }
-

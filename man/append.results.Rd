@@ -5,10 +5,9 @@
 \title{Function that appends to lists/data.frame instead of overwriting them
 (in contrast to load())}
 \usage{
-append.results(file, ...)
+append.results(file, add.filename = FALSE, ...)
 }
 \description{
 Function that appends to lists/data.frame instead of overwriting them
 (in contrast to load())
 }
-

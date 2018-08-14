@@ -9,4 +9,3 @@ a \%==\% b
 \description{
 Test for approximate equality
 }
-

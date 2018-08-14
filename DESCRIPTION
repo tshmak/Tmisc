@@ -10,3 +10,4 @@ License: What license is it under?
 LazyData: TRUE
 Imports: Matrix,lattice,data.table,ggplot2
 Depends: methods,utils,graphics,stats
+RoxygenNote: 6.0.1

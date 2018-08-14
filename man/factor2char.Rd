@@ -9,4 +9,3 @@ factor2char(df)
 \description{
 Function to turn factor variables in df (data.frame) to characters
 }
-

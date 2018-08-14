@@ -5,22 +5,24 @@
 \title{Function to Automatically retrieve filename of R script file
 when run using Rscript. Similar to filename.seed().}
 \usage{
-Rfilename(filename = "test", seed = NULL, no.seed.in.filename = FALSE)
+Rfilename(filename = "test", seed = NULL, set.seed = TRUE)
 }
 \arguments{
 \item{seed}{Can be either "prompt", or any integer}
+
+\item{set.seed}{If set.seed==FALSE, then seed is only used to
+prompt for other options}
 }
 \description{
 Function to Automatically retrieve filename of R script file
 when run using Rscript. Similar to filename.seed().
 }
 \details{
-If seed is "prompt", then in interactive mode, 
-you'll be prompted to input a seed and in non-interactive mode, 
-your arguments following the script file will be your seed. 
-If you don't input anything or your seed is non-numeric, 
-a seed will be generated based on the current time. 
-You can additionally input other options following the seed, 
+If seed is "prompt", then in interactive mode,
+you'll be prompted to input a seed and in non-interactive mode,
+your arguments following the script file will be your seed.
+If you don't input anything or your seed is non-numeric,
+a seed will be generated based on the current time.
+You can additionally input other options following the seed,
 separating them by ";" or spaces.
 }
-

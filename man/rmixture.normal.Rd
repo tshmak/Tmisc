@@ -11,4 +11,3 @@ rmixture.normal(n, p.causal, ...)
 Generate random mixure Normal variables
 Mixture of 0 and rnorm(n.causal, ...)
 }
-

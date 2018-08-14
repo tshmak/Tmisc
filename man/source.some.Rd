@@ -11,4 +11,3 @@ source.some(file, start = "", end = "", run = FALSE, ...)
 Function to source part of an R script. 
 Helps avoid duplication of codes!
 }
-

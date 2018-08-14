@@ -10,4 +10,3 @@
 \description{
 Automatic plotting of results.table...
 }
-
