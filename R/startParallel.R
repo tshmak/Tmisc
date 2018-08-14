@@ -1,4 +1,4 @@
-startParallel <- function(nthreads) {
+startParallel <- function(nthreads, forceParallel=F) {
   if(missing(nthreads)) {
     if(interactive()) {
       input <- readline("number of threads? ")
@@ -15,6 +15,8 @@ startParallel <- function(nthreads) {
       nthreads <- as.integer(input)
     }
   }
+
+  if(nthreads == 1 && !forceParallel) return(NULL)
 
   max.threads <- parallel::detectCores()
   if(nthreads > max.threads) {
