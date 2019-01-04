@@ -23,14 +23,13 @@ match.col <- function(test, target, default.targets,
   if(mustfind) {
     test2 <- test
     targets2 <- target
-    target.name <- target[1]
     # ignore.case ignored when mustfind
   } else if(auto.detect && !missing(default.targets)) {
     test2 <- test
     targets2 <- default.targets
-    target.name <- default.targets[1]
   } else return(integer(0))
-
+  target.name <- default.targets[1]
+  
   if(ignore.case) {
     test2 <- tolower(test2)
     targets2 <- tolower(targets2)

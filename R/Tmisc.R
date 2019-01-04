@@ -1,1 +1,4 @@
-Tmisc <- function() Tim.load(Tmisc)
+Tmisc <- function(clear=TRUE, ...) {
+  if(clear) clear(...)
+  Tim.load(Tmisc)
+}

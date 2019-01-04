@@ -5,7 +5,9 @@
 \title{Program to perform liftover of coordinates using LiftOver
 using program from https://genome.ucsc.edu/cgi-bin/hgLiftOver}
 \usage{
-liftover(chr, pos, pos2 = NULL, from, to, bedformat = FALSE)
+liftover(chr, pos, pos2 = NULL, from, to, bedformat = FALSE,
+  liftover = attachroot("software/LiftOver/20160217/liftOver"),
+  chain.files.dir = attachroot("software/LiftOver/resources/"))
 }
 \description{
 Program to perform liftover of coordinates using LiftOver

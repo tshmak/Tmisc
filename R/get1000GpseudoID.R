@@ -5,8 +5,6 @@ get1000GpseudoID <- function(df, rm.duplicates=T,
   #' Find the pseudoID used in the 1000G dataset on our server 
   #' given rsID or chromosome and position and alleles
   
-  Tim.load(SNPdata, reset=F)
-  Tim.load(mysimtools, reset=F)
   library(data.table)
   id <- rep("", nrow(df))
   

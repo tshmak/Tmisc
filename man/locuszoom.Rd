@@ -5,11 +5,14 @@
 \title{Wrapper around locuszoom (1.4)}
 \usage{
 locuszoom(data = NULL, ..., type = c("auto", "metal", "epacts"),
-  chr.col = NULL, pos.col = NULL, marker.col = NULL, pval.col = NULL,
-  annot.col = NULL, ld = NULL,
+  chr.col = NULL, pos.col = NULL, marker.col = NULL,
+  pval.col = NULL, annot.col = NULL, ld = NULL,
   locuszoom.dir = "~/software/locuszoom_tim/", ld.cache = tempfile(),
-  Rplink.opts = list(), plot = TRUE, verbose = debug, debug = FALSE,
-  help = FALSE, keepfiles = FALSE)
+  Rplink.opts = list(), plot = TRUE, verbose = debug,
+  debug = FALSE, help = FALSE, keepfiles = FALSE)
+}
+\description{
+Wrapper around locuszoom (1.4)
 }
 \details{
 Note that the conf/m2zfast.conf file in locuszoom must be set up to point to the various

@@ -1,5 +1,5 @@
-parallel <- function(nclusters, test.nclusters=2) {
+parallel <- function(nclusters) {
   library(parallel)
-  # if(interactive()) nclusters <- test.nclusters
+  if(is.null(nclusters)) return(NULL) 
   return(makeCluster(nclusters, type="FORK", outfile=""))
 }

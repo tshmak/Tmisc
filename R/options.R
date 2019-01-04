@@ -1,1 +1,1 @@
-options(stringsAsFactors = FALSE)
+# options(stringsAsFactors = FALSE)

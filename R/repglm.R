@@ -59,7 +59,7 @@ repglm <- function(x, y, covariates=NULL, return=NULL, constant=T,
 
   ytouse <- y
   for(i in 1:ncol) {
-    if(trace > 0) mysimtools::print.counter(i, skip=100,max=ncol)
+    if(trace > 0) print.counter(i, skip=100,max=ncol)
     X <- do.call("cbind", lapply(x, f))
     if (constant) touse <- cbind(1, X, covariates) else
       touse <- cbind(X, covariates)

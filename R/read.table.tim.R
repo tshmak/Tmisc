@@ -1,12 +1,9 @@
-read.table.tim <- function(...)  {
+read.table.tim <- function(input, ..., comment=NULL)  {
   options <- list(...)
-  if(is.null(options$header)) {
-    options2 <- options
-    options2$stringsAsFactors <- NULL
-    options2$nrows <- NULL
-    options2$skip <- NULL
-    options$header <- do.call("check.header", options2)
+  if(is.null(options$data.table)) options$data.table <- F
+  if(is.null(options$check.names)) options$check.names <- T
+  if(is.null(comment)) options$input <- input else {
+    options$input <- paste("sed", paste0("'/^", comment, "/d'"), input)
   }
-  if(is.null(options$stringsAsFactors)) options$stringsAsFactors <- F
-  return(do.call("read.table",options))
+  return(do.call("fread",options))
 }

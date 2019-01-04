@@ -14,6 +14,9 @@
 
 #### .R file ####
 args <- commandArgs(TRUE)
+if(args[length(args)] == "--TEST") {
+  print(args)
+}
 if(any(args == "--nthreads")) {
   w <- which(args == "--nthreads")
   if(w == length(args)) {
@@ -28,7 +31,7 @@ if(any(args == "--nthreads")) {
 
 # print("args"); print(args)
 
-w <- which(grepl(".r$", args, ignore.case = TRUE))
+w <- which(grepl("\\.r$", args, ignore.case = TRUE))
 Rfile <- args[w]
 if(w > 1) preRfile <- paste(args[1:(w-1)], collapse=" ") else
   preRfile <- ""
@@ -41,6 +44,7 @@ if(length(Rfile) == 0) {
 #### Function for converting sizes ####
 sizes <- c(gb=1e9, mb=1e6, kb=1e3)
 sizeconvert <- function(x) {
+  x <- trimws(x)
   out <- x
   for(i in 1:length(sizes)) {
     if(grepl(paste0(names(sizes)[i], "$"), x, ignore.case = T)) {
@@ -52,7 +56,7 @@ sizeconvert <- function(x) {
 }
 
 #### Other options to quicksub ####
-O <- strsplit(preRfile, split="-")[[1]]
+O <- trimws(strsplit(preRfile, split="-")[[1]])
 # print(O)
 Walltime <- grepl("^w[[:space:]]", O)
 if(any(Walltime)) {

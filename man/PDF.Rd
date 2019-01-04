@@ -3,11 +3,11 @@
 \name{PDF}
 \alias{PDF}
 \title{start pdf if non-interactive
-saves some global variable to be used by mysimtools::dev.copy2pdf()}
+saves some global variable to be used by dev.copy2pdf()}
 \usage{
 PDF(file, ..., width = 7, height = 7)
 }
 \description{
 start pdf if non-interactive
-saves some global variable to be used by mysimtools::dev.copy2pdf()
+saves some global variable to be used by dev.copy2pdf()
 }

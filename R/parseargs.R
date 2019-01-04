@@ -1,4 +1,6 @@
-parseargs <- function(..., silent=F, include.others=TRUE) {
+parseargs <- function(required=character(0), ..., silent=F, include.others=TRUE, 
+                      test=NULL) {
+
   opts <- list(...)
   if(!interactive()) {
     text <- commandArgs(trailingOnly = FALSE)
@@ -12,59 +14,52 @@ parseargs <- function(..., silent=F, include.others=TRUE) {
       text <- paste(text[-(1:start)], collapse = " ")
     }
   } else {
-    Text <- readline()
+    if(!is.null(test)) Text <- test else 
+      Text <- readline(prompt = "Arguments? ")
     text <- sub('^"(.*)"$', '\\1', Text)
     if(text == Text) {
       text <- sub("^'(.*)'$", '\\1', Text)
     }
   }
-  # text <- "abc.sh --abc 234 --def-3 --uio 23/asdf/asdf"
-  sp <- strsplit(text, split="[[:space:]]--")[[1]]
-  opts[[".OTHER."]] <- sp[1]
-# print(text)
-# print(sp)
+  sp <- strsplit(text, split="(^|[[:space:]])--")[[1]]
+  opts[[".OTHER.before"]] <- sp[1]
+
   sp <- sp[-1]
-  if(length(sp) == 0) return(opts)
-  
-  sp2 <- strsplit(sp, split="[[:space:]]")
-  
-  Names <- sapply(sp2, function(x) x[1])
-  names <- as.character(Names)
-  if(!silent) message("Options: ")
-  for(i in 1:length(sp2)) {
-    if(length(sp2[[i]]) > 1) {
-      val <- sp2[[i]][2]
-      if(!silent) cat(paste0("--", Names[i], " ", val, "\n"))
-      if(grepl("\\.file[01]?[tsc]?$", Names[i])) {
-        header <- !grepl("0[tsc]?$", Names[i])
-        sep <- ifelse(grepl("t$", Names[i]), "\t", ifelse(grepl("c$", Names[i]), ",", ""))
-        val <- read.table(val, header=header, sep=sep)
-        if(ncol(df) == 1) {
-          val <- val[,1]
-        }
-        names[i] <- sub("\\.file[01]?[tsc]?$", "", names[i])
+  if(length(sp) > 0) {
+
+    sp2 <- strsplit(sp, split="[[:space:]]")
+    
+    Names <- sapply(sp2, function(x) x[1])
+    names <- as.character(Names)
+    if(!silent) message("Options: ")
+    for(i in 1:length(sp2)) {
+      if(length(sp2[[i]]) > 1) {
+        val <- paste(sp2[[i]][-1], collapse=" ")
       } else {
-        if(!is.na(as.logical(val))) {
-          val <- as.logical(val)
-        } else {
-          suppressWarnings(if(!is.na(as.numeric(val))) val <- as.numeric(val))
-        }
+        val <- TRUE
       }
+      if(!silent) cat(paste0("--", Names[i], " ", val, "\n"))
       opts[[names[i]]] <- val
-      if(length(sp2[[i]]) > 2) {
-        others <- sp2[[i]][-(1:2)]
-        opts[[paste0(".OTHER.", names[i])]] <- others
-        if(i == length(sp2)) {
-          opts[[".OTHER.last"]] <- others
-        }
+      
+      if(i == length(sp2)) {  # Options not preceded by --
+        if(length(sp2[[i]]) > 1) opts[[".OTHER.after"]] <- paste(sp2[[i]][-1], collapse=" ")
       }
-    } else {
-      opts[[names[i]]] <- TRUE
+    }
+    if(!include.others) {
+      exclude <- grepl("^\\.OTHER\\.", names(opts)) | grepl("^\\.SYSTEM", names(opts))
+      opts <- opts[!exclude]
+    }
+  
+    for(i in 1:length(opts)) {
+      suppressWarnings(if(!is.logical(opts[[i]]) && !is.na(as.numeric(opts[[i]]))) 
+        opts[[i]] <- as.numeric(opts[[i]]))
     }
   }
-  if(!include.others) {
-    exclude <- grepl("^\\.OTHER\\.", names(opts)) | grepl("^\\.SYSTEM", names(opts))
-    opts <- opts[!exclude]
+
+  if(length(required) > 0) {
+    for(v in required) {
+      if(!(v %in% names(opts))) stop(paste0("--", v, " is required."))
+    }
   }
   
   return(opts)

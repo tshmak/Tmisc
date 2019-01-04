@@ -6,9 +6,10 @@
 matching columns by the first 3 letters of the column names (unless regex=T)}
 \usage{
 match.col(test, target, default.targets, auto.detect = missing(target) ||
-  is.null(target), ignore.multiple.matches = F, mustfind = !(missing(target)
-  || is.null(target) || all(target == "")), regex = F,
-  ignore.case = !mustfind, fuzzy = !mustfind, silent = F)
+  is.null(target), ignore.multiple.matches = F,
+  mustfind = !(missing(target) || is.null(target) || all(target == "")),
+  regex = F, ignore.case = !mustfind, fuzzy = !mustfind,
+  silent = F)
 }
 \description{
 Column name matching function: Used by matchpos() and locuszoom()

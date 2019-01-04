@@ -5,8 +5,8 @@
 \title{Function to mimic Plink's --clump command
 It's not equivalent to plink's command.}
 \usage{
-clump(pvals, genotype, pos, SNP = paste0("SNP", 1:length(pvals)), r2 = 0.2,
-  window.kb = 250000, p1 = 1, p2 = 1, trace = 0)
+clump(pvals, genotype, pos, SNP = paste0("SNP", 1:length(pvals)),
+  r2 = 0.2, window.kb = 250000, p1 = 1, p2 = 1, trace = 0)
 }
 \description{
 Function to mimic Plink's --clump command

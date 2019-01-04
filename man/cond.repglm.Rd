@@ -5,7 +5,8 @@
 \title{Perform conditional analysis a la Yang et al (2012) Nature Genetics}
 \usage{
 cond.repglm(x, y, r2 = 0.9, p.threshold = 5e-08, cluster = NULL, ...,
-  to.test = NULL, cond.pos = integer(0), trace = 0, detailed.output = F)
+  to.test = NULL, cond.pos = integer(0), trace = 0,
+  detailed.output = F)
 }
 \description{
 Perform conditional analysis a la Yang et al (2012) Nature Genetics

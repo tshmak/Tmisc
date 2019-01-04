@@ -1,12 +1,12 @@
-liftover <- function(chr, pos, pos2=NULL, from, to, bedformat=FALSE) {
+liftover <- function(chr, pos, pos2=NULL, from, to, bedformat=FALSE, 
+                     liftover=attachroot("software/LiftOver/20160217/liftOver"), 
+                     chain.files.dir=attachroot("software/LiftOver/resources/")) {
   #' Program to perform liftover of coordinates using LiftOver
   #' using program from https://genome.ucsc.edu/cgi-bin/hgLiftOver
   
   # pos2 <- NULL
   POS2 <- pos2
-  liftover <- "/psychipc01/disk2/software/LiftOver/20160217/liftOver"
-  chain.files.dir <- "/psychipc01/disk2/software/LiftOver/resources/" 
-    
+
   from[from == 37] <- 19; to[to == 37] <- 19
   from[from == 36] <- 18; to[to == 36] <- 18
   from[from == 35] <- 17; to[to == 35] <- 17
@@ -43,6 +43,8 @@ liftover <- function(chr, pos, pos2=NULL, from, to, bedformat=FALSE) {
     fail <- read.table.tim(newfailfile, comment="#")
     stopifnot(nrow(fail) + nrow(newbed) == nrow(bed))
     colnames(fail) <- c("chr", "from", "to", "order")
+    fail$from <- NA
+    fail$to <- NA
     result <- rbind(newbed, fail)
   } else {
     stopifnot(nrow(newbed) == nrow(bed))
