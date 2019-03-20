@@ -58,11 +58,9 @@ if(Sys.info()['user'] == "tshmak") {
   #### Check if basic packages installed ####
   basic.packages <- c("Rcpp", "roxygen2", "devtools", "data.table", "ggplot2")
   # print(search())
-  if(!all(basic.packages %in% utils::installed.packages(.libPaths()[2]))) {
-    warning(paste("Not all of the basic packages: (", paste(basic.packages, collapse = ", "), ") are installed.",
-                  "I'll now install them."))
-    install.packages(basic.packages)
-
+  if(!all(basic.packages %in% rownames(utils::installed.packages(.libPaths()[2]) ) )) {
+    stop(paste("Not all of the basic packages: (", paste(basic.packages, collapse = ", "), ") are installed.",
+                  "type 'install.packages(basic.packages, lib=libpath)' to install them."))
   }
 
 }
