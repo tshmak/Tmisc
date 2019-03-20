@@ -1,5 +1,6 @@
 ### Common startup file (both Linux and windows)
 # .rootdir <- Sys.getenv("HOME")
+savevar <- FALSE
 if(!exists(".rootdir")) {
   stop("Please define .rootdir before calling Startup. Can consider modifying .Rprofile file.")
 }
@@ -59,8 +60,9 @@ if(Sys.info()['user'] == "tshmak") {
   basic.packages <- c("Rcpp", "roxygen2", "devtools", "data.table", "ggplot2")
   # print(search())
   if(!all(basic.packages %in% rownames(utils::installed.packages(.libPaths()[2]) ) )) {
-    stop(paste("Not all of the basic packages: (", paste(basic.packages, collapse = ", "), ") are installed.",
+    warning(paste("Not all of the basic packages: (", paste(basic.packages, collapse = ", "), ") are installed.",
                   "type 'install.packages(basic.packages, lib=libpath)' to install them."))
+    savevar <- TRUE
   }
 
 }
@@ -83,4 +85,4 @@ if(!interactive()) {
   }
 }
 
-rm(list=ls(all=T))
+if(!savevar) rm(list=ls(all=T))
