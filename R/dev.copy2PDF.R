@@ -1,6 +1,6 @@
 dev.copy2PDF <- function(file, ..., width=NULL, height=NULL) {
-  #' overrides default to enable similar behaviour from interactive and
-  #' non-interactive use
+  #' overrides default to enable similar behaviour from Interactive and
+  #' non-Interactive use
   #' used in conjunction with PDF()
 
   if(exists(".pdf.file", envir=.GlobalEnv, inherits = F)) {

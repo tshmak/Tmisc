@@ -4,14 +4,14 @@ Rfilename <- function(filename="test", seed=NULL, set.seed=TRUE) {
   #' @param seed Can be either "prompt", or any integer
   #' @param set.seed If set.seed==FALSE, then seed is only used to
   #' prompt for other options
-  #' @details If seed is "prompt", then in interactive mode,
-  #' you'll be prompted to input a seed and in non-interactive mode,
+  #' @details If seed is "prompt", then in Interactive mode,
+  #' you'll be prompted to input a seed and in non-Interactive mode,
   #' your arguments following the script file will be your seed.
   #' If you don't input anything or your seed is non-numeric,
   #' a seed will be generated based on the current time.
   #' You can additionally input other options following the seed,
   #' separating them by ";" or spaces.
-  if(!interactive()) {
+  if(!Interactive()) {
     opts <- parseargs()
     filename <- opts$.SYSTEM[which(grepl("^--file=", opts$.SYSTEM))[1]]
     filename <- sub("^--file=", "", filename)
@@ -24,7 +24,7 @@ Rfilename <- function(filename="test", seed=NULL, set.seed=TRUE) {
   }
   input <- NULL
   if(seed == "prompt") {
-    if(interactive()) {
+    if(Interactive()) {
       input <- readline("seed? ")
     } else {
       input <- paste(commandArgs(T), collapse=" ")

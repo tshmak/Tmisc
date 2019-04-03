@@ -2,7 +2,7 @@ parseargs <- function(required=character(0), ..., silent=F, include.others=TRUE,
                       test=NULL) {
 
   opts <- list(...)
-  if(!interactive()) {
+  if(!Interactive()) {
     text <- commandArgs(trailingOnly = FALSE)
     # str(text)
     start <- which(text == "--args")

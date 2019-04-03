@@ -1,6 +1,6 @@
 startParallel <- function(nthreads, forceParallel=F) {
   if(missing(nthreads)) {
-    if(interactive()) {
+    if(Interactive()) {
       input <- readline("number of threads? ")
     } else {
       input <- parseargs()$nthreads
