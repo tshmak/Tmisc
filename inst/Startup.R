@@ -8,16 +8,23 @@ if(!exists(".rootdir")) {
 options(.rootdir=.rootdir)
 
 Startup <- new.env()
-startup.funcs <- c("clear", "attachroot", "Tim.load", "Tmisc", "devel", "install.packages")
+startup.funcs <- c("clear", "Tim.load", "attachroot", "Tmisc", "devel")
 for(f in startup.funcs) {
   sys.source(paste0(.rootdir, "/WORK/myRpackages/Tmisc/R/", f, ".R"), envir=Startup)  
 }
 
 attach(Startup)
 
-#### Using MRAN repositories ####
+#### Running conda R? ####
+conda <- grepl("conda", system("which R", intern=TRUE))
+if(conda) options(running.condaR=TRUE)
 
-if(Sys.info()['user'] == "tshmak") {
+#### Running on jupyter? ####
+jupyternb <- any(grepl("IRkernel", commandArgs(FALSE)))
+if(jupyternb) options(running.jupyternb=TRUE)
+
+#### Using MRAN repositories ####
+if(Sys.info()['user'] == "tshmak" && !conda) {
   
   required.dir <- paste0(.rootdir, "/WORK/Rpackages2")
   if(!dir.exists(required.dir)) stop(paste(required.dir, "does not exist yet. Please create it."))
@@ -86,3 +93,5 @@ if(!interactive()) {
 }
 
 if(!savevar) rm(list=ls(all=T))
+cat("Startup successfully loaded\n")
+
