@@ -16,7 +16,8 @@ for(f in startup.funcs) {
 attach(Startup)
 
 #### Running conda R? ####
-conda <- grepl("conda", system("which R", intern=TRUE))
+# conda <- grepl("conda", system("which R", intern=TRUE))
+conda <- grepl("conda", commandArgs(FALSE)[1])
 if(conda) options(running.condaR=TRUE)
 
 #### Running on jupyter? ####
