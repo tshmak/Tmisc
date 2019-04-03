@@ -1,6 +1,9 @@
 install.packages <- function(..., repos=getOption("repos")) {
   #' Function to install to local MRAN library if from MRAN. 
   #' Otherwise install to default (should be attachroot("/WORK/Rpackages/nonMRAN"))
+  
+  if(isTRUE(getOption("running.condaR"))) stop("You need to use 'conda install r-[Rpackage]' rather than this command since you're running R in conda.") 
+  
   date <- "[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]"
   libPaths <- .libPaths()
   
