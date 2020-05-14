@@ -95,5 +95,5 @@ if(!interactive()) {
 }
 
 if(!savevar) rm(list=ls(all=T))
-cat("Startup successfully loaded\n")
+message("Startup successfully loaded")
 
